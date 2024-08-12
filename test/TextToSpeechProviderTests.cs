@@ -1,7 +1,7 @@
 namespace VoiceBridge.Tests;
 
 [TestClass]
-public class UnitTest1
+public class TextToSpeechProviderTests
 {
   [TestMethod]
   public void TestMethod1()

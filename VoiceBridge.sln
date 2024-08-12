@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.Console", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.Tests", "test\VoiceBridge.Tests.csproj", "{EE88B7E5-B56F-4DEA-A6E9-D39E51F11485}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceBridge", "src\library\VoiceBridge.csproj", "{01613AE7-A56A-4D47-BF6C-EDBA639430F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge", "src\library\VoiceBridge.csproj", "{01613AE7-A56A-4D47-BF6C-EDBA639430F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
