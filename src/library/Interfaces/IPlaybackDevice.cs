@@ -2,7 +2,9 @@
 
 public interface IPlaybackDevice
 {
-    public bool IsPlaying { get; set; }
-
-    Task PlayAudioAsync(BinaryData audioData);
+  public bool IsPlaying { get; }
+  void Start();
+  void Stop();
+  void Write(BinaryData audioData);
+  Task WriteAsync(BinaryData data);
 }

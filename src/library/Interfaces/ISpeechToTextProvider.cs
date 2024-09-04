@@ -2,5 +2,6 @@
 
 public interface ISpeechToTextProvider
 {
-    public Task<string?> TranscribeAudioAsync(Stream speech); // string filename = "speech.wav"
+    public Task<string?> TranscribeAudioAsync(BinaryData data);
+    BinaryData CreateWaveFile(BinaryData data);
 }

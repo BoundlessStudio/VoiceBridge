@@ -1,18 +1,14 @@
-﻿namespace VoiceBridge.Interfaces;
+﻿using VoiceBridge.Models;
 
-public class RecordingCapturedEventArgs : EventArgs
+namespace VoiceBridge.Interfaces;
+
+
+public interface IAudioRecorder
 {
-    public BinaryData Data { get; set; }
-}
+  event EventHandler<SpeechAvailableEventArgs>? OnSpeechDetected;
 
-public interface IRecordingDevice
-{
-  public void Start();
-  public void Stop();
+  bool IsRecording { get; }
 
-  public bool IsRecording { get; set; }
-
-  public event EventHandler<RecordingCapturedEventArgs>? RecordingCaptured;
-
-  Task<Stream> WriteRecording(BinaryData data);
+  void Start();
+  void Stop();
 }

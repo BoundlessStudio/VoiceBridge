@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="VoiceBridge.App.BridgePage">
+
+  <ScrollView>
+    <VerticalStackLayout
+      Padding="30,0"
+      Spacing="25">
+      <Image IsVisible="{Binding IsActive}" Source="logo_active.png" HeightRequest="185" Aspect="AspectFit"  />
+      <Image IsVisible="{Binding IsInactive}" Source="logo.png" HeightRequest="185" Aspect="AspectFit"  />
+      <Label Text="Walkie Talkie AI" Style="{StaticResource Headline}" />
+      <Label Text="Connected to Bridge" Style="{StaticResource SubHeadline}" />
+      <Button 
+        Text="Start" 
+        Command="{Binding StartCommand}" 
+        HorizontalOptions="Fill" />
+      <Button 
+        Text="Stop"  
+        Command="{Binding StopCommand}" 
+        HorizontalOptions="Fill" />
+      <Button Text="Back to Main" Clicked="OnBackToMainClicked" HorizontalOptions="Fill" />
+    </VerticalStackLayout>
+  </ScrollView>
+
+</ContentPage>

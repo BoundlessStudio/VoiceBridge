@@ -5,9 +5,11 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.Console", "src\console\VoiceBridge.Console.csproj", "{26492A38-710E-49AE-B741-0A67FEC4AC28}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.Tests", "test\VoiceBridge.Tests.csproj", "{EE88B7E5-B56F-4DEA-A6E9-D39E51F11485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.Core", "src\library\VoiceBridge.Core.csproj", "{01613AE7-A56A-4D47-BF6C-EDBA639430F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge", "src\library\VoiceBridge.csproj", "{01613AE7-A56A-4D47-BF6C-EDBA639430F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.App", "src\maui\VoiceBridge.App.csproj", "{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceBridge.Worker", "src\worker\VoiceBridge.Worker.csproj", "{19032CA5-D20E-4EF1-8C43-FAC7D783925B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +21,20 @@ Global
 		{26492A38-710E-49AE-B741-0A67FEC4AC28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26492A38-710E-49AE-B741-0A67FEC4AC28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26492A38-710E-49AE-B741-0A67FEC4AC28}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE88B7E5-B56F-4DEA-A6E9-D39E51F11485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE88B7E5-B56F-4DEA-A6E9-D39E51F11485}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE88B7E5-B56F-4DEA-A6E9-D39E51F11485}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE88B7E5-B56F-4DEA-A6E9-D39E51F11485}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01613AE7-A56A-4D47-BF6C-EDBA639430F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01613AE7-A56A-4D47-BF6C-EDBA639430F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01613AE7-A56A-4D47-BF6C-EDBA639430F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01613AE7-A56A-4D47-BF6C-EDBA639430F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{19032CA5-D20E-4EF1-8C43-FAC7D783925B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19032CA5-D20E-4EF1-8C43-FAC7D783925B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19032CA5-D20E-4EF1-8C43-FAC7D783925B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19032CA5-D20E-4EF1-8C43-FAC7D783925B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

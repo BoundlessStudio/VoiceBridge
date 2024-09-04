@@ -18,7 +18,6 @@ await Host.CreateDefaultBuilder(args)
    })
   .ConfigureServices((context, services) =>
   {
-    services.AddDefaultVoiceBridge();
     services.AddHostedService<VoiceBackgroundService>();
   })
   .ConfigureLogging(logging =>

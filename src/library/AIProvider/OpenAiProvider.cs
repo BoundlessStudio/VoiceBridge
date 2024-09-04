@@ -9,15 +9,13 @@ namespace VoiceBridge.AIProvider;
 
 public class OpenAiProvider : IAiProvider
 {
-  private readonly ILogger logger;
   private readonly VoiceBridgeOptions options;
   private readonly ChatClient client;
   private readonly List<ChatMessage> messages;
 
-  public OpenAiProvider(ILogger logger, IOptions<VoiceBridgeOptions> options, OpenAIClient client)
+  public OpenAiProvider(VoiceBridgeOptions options, OpenAIClient client)
   {
-    this.logger = logger;
-    this.options = options.Value;
+    this.options = options;
     this.client = client.GetChatClient("gpt-4o");
     messages = new List<ChatMessage>();
   }
@@ -69,7 +67,7 @@ Time: {DateTime.Now.ToLongTimeString()}
     ChatCompletion completion = await client.CompleteChatAsync(messages, options);
     var response = completion.Content.FirstOrDefault()?.Text ?? string.Empty;
 
-    logger.LogInformation("AI Response: {response}", response);
+    //logger.LogInformation("AI Response: {response}", response);
 
     messages.Add(new AssistantChatMessage(response));
 
