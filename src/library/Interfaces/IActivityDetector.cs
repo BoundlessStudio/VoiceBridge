@@ -1,6 +1,8 @@
-﻿namespace VoiceBridge.Interfaces;
+﻿using VoiceBridge.Models;
+
+namespace VoiceBridge.Interfaces;
 
 public interface IActivityDetector
 {
-    public bool ActivityDetected(BinaryData data);
+    public bool ActivityDetected(BinaryData data, ActivityDetectorOptions options);
 }

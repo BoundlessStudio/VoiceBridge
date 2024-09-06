@@ -11,16 +11,29 @@
       <Image IsVisible="{Binding IsActive}" Source="logo_active.png" HeightRequest="185" Aspect="AspectFit"  />
       <Image IsVisible="{Binding IsInactive}" Source="logo.png" HeightRequest="185" Aspect="AspectFit"  />
       <Label Text="Walkie Talkie AI" Style="{StaticResource Headline}" />
-      <Label Text="Connected to Bridge" Style="{StaticResource SubHeadline}" />
+      <!--<Label Text="Connect to the Bridge" Style="{StaticResource SubHeadline}" />-->
       <Button 
         Text="Start" 
+        IsVisible="{Binding IsInactive}"
         Command="{Binding StartCommand}" 
         HorizontalOptions="Fill" />
-      <Button 
-        Text="Stop"  
+      <Button
+        Text="Stop"
+        IsVisible="{Binding IsActive}"
         Command="{Binding StopCommand}" 
         HorizontalOptions="Fill" />
-      <Button Text="Back to Main" Clicked="OnBackToMainClicked" HorizontalOptions="Fill" />
+      <Button 
+        Text="Back to Main" 
+        Clicked="OnBackToMainClicked" 
+        HorizontalOptions="Fill" />
+      <CollectionView x:Name="LogCollectionView" ItemsSource="{Binding LogEntries}">
+        <CollectionView.ItemTemplate>
+          <DataTemplate>
+            <Label Text="{Binding}" Padding="10" FontSize="14"/>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+      </CollectionView>
+      
     </VerticalStackLayout>
   </ScrollView>
 

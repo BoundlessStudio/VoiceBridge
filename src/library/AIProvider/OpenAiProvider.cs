@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using OpenAI;
+﻿using OpenAI;
 using OpenAI.Chat;
 using VoiceBridge.Interfaces;
 using VoiceBridge.Models;
@@ -9,26 +7,24 @@ namespace VoiceBridge.AIProvider;
 
 public class OpenAiProvider : IAiProvider
 {
-  private readonly VoiceBridgeOptions options;
   private readonly ChatClient client;
   private readonly List<ChatMessage> messages;
 
-  public OpenAiProvider(VoiceBridgeOptions options, OpenAIClient client)
+  public OpenAiProvider(OpenAIClient client)
   {
-    this.options = options;
-    this.client = client.GetChatClient("gpt-4o");
+    this.client = client.GetChatClient("gpt-4o-2024-08-06");
     messages = new List<ChatMessage>();
   }
 
   public void ClearMessages() => this.messages.Clear();
 
-  public async Task<string> GetAIResponseAsync(string text)
+  public async Task<string> GetAIResponseAsync(string text, AiProviderOptions settings)
   {
     messages.Add(new UserChatMessage(text));
 
     var system = $@"
 <instructions>
-You are an AI assistant integrated with a walkie-talkie system. 
+You manage a walkie-talkie system and your Call Sign is {settings.AiCallSign}.
 Your responses go through speech-to-text and text-to-speech processes. 
 Your primary function is to respond to voice queries transmitted over radio. Follow these guidelines:
 
@@ -49,8 +45,7 @@ Your primary function is to respond to voice queries transmitted over radio. Fol
 Remember, your responses transmitted over radio, so focus on delivering the most important information efficiently.
 </instructions>
 <varaibles>
-Your Call Sign: {this.options.AiCallSign}
-User Call Sign: {this.options.UserCallSign}
+User: {settings.UserCallSign}
 Date: {DateTime.Now.ToLongDateString()}
 Time: {DateTime.Now.ToLongTimeString()}
 </varaibles>
@@ -64,10 +59,8 @@ Time: {DateTime.Now.ToLongTimeString()}
     {
       MaxTokens = 150
     };
-    ChatCompletion completion = await client.CompleteChatAsync(messages, options);
+    ChatCompletion completion = await client.CompleteChatAsync(collection, options);
     var response = completion.Content.FirstOrDefault()?.Text ?? string.Empty;
-
-    //logger.LogInformation("AI Response: {response}", response);
 
     messages.Add(new AssistantChatMessage(response));
 

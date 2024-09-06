@@ -40,7 +40,7 @@ public static class MauiProgram
     builder.Services.AddSingleton(sp =>
     {
       var settings = sp.GetRequiredService<ISettingsService>();
-      var options = new VoiceBridgeOptions()
+      var options = new AiProviderOptions()
       {
         AiCallSign = settings.AiCallSign,
         UserCallSign = settings.UserCallSign

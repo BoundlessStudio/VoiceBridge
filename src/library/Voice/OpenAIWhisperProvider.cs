@@ -23,18 +23,14 @@ public class OpenAIWhisperProvider : ISpeechToTextProvider
     var speech = data.ToStream();
     AudioTranscription response = await client.TranscribeAudioAsync(speech, "speech.wav", options);
     var transcript = response.Text;
-    
-    //this.logger.LogInformation("Transcript: {transcript}", transcript);
 
     if (response.Duration < TimeSpan.FromSeconds(1))
     {
-      //this.logger.LogWarning("Short Circuiting: Duration");
       return null;
     }
 
     if (!transcript.Any(char.IsLetter))
     {
-      //this.logger.LogWarning("Short Circuiting: No Words");
       return null;
     }
 

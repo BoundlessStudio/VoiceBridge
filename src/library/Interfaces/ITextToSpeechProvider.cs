@@ -1,6 +1,8 @@
-﻿namespace VoiceBridge.Interfaces;
+﻿using VoiceBridge.Models;
+
+namespace VoiceBridge.Interfaces;
 
 public interface ITextToSpeechProvider
 {
-  Task<BinaryData> GenerateSpeechFromTextAsync(string text);
+  Task<BinaryData> GenerateSpeechFromTextAsync(string text, TextToSpeechProviderOptions options);
 }

@@ -50,6 +50,14 @@ public class AudioPlayer : IPlaybackDevice, IDisposable
   public void Stop()
   {
     player.Stop();
+    player.Flush();
+  }
+
+  public void Flush()
+  {
+    player.Stop();
+    player.Flush();
+    player.Play();
   }
 
   public void Write(BinaryData data)

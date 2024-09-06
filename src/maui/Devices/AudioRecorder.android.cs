@@ -3,28 +3,35 @@
 
 #if ANDROID
 using Android.Media;
+using Android.Media.Audiofx;
+using VoiceBridge.App.Services;
 using VoiceBridge.Interfaces;
 using VoiceBridge.Models;
+
 public class AudioRecorder : IAudioRecorder, IDisposable
 {
   private const int SAMPLE_RATE = 24_100;
   private const Encoding AUDIO_FORMAT = Android.Media.Encoding.Pcm16bit;
 
+  private AcousticEchoCanceler? echoCanceler;
   private AudioRecord recorder;
   private readonly int bufferSize;
   private volatile bool isRecording;
+
+  private readonly ISettingsService settings;
   private readonly IActivityDetector activityDetector;
   private readonly List<BinaryData> activityBuffer;
   public event EventHandler<SpeechAvailableEventArgs>? OnSpeechDetected;
 
   public bool IsRecording => isRecording;
 
-  public AudioRecorder(IActivityDetector activityDetector)
+  public AudioRecorder(ISettingsService settings, IActivityDetector activityDetector)
   {
     int bufferSize = AudioRecord.GetMinBufferSize(SAMPLE_RATE, ChannelIn.Mono, AUDIO_FORMAT);
     this.bufferSize = Math.Max(bufferSize, 4096);
 
     this.isRecording = false;
+    this.settings = settings;
     this.activityDetector = activityDetector;
     this.activityBuffer = new List<BinaryData>();
 
@@ -38,6 +45,12 @@ public class AudioRecorder : IAudioRecorder, IDisposable
         ?.SetAudioFormat(recordFormat)
         ?.SetBufferSizeInBytes(bufferSize)
         ?.Build() ?? throw new NullReferenceException(" AudioRecord.Builder");
+
+    if (AcousticEchoCanceler.IsAvailable)
+    {
+      this.echoCanceler = AcousticEchoCanceler.Create(recorder.AudioSessionId);
+      this.echoCanceler?.SetEnabled(true);
+    }
   }
 
   public void Start()
@@ -74,7 +87,11 @@ public class AudioRecorder : IAudioRecorder, IDisposable
 
   private void ProcessAudioData(BinaryData audioData)
   {
-    bool activityDetected = this.activityDetector.ActivityDetected(audioData);
+    var options = new ActivityDetectorOptions()
+    {
+      VolumeThreshold = this.settings.GetVolumeThreshold()
+    };
+    bool activityDetected = this.activityDetector.ActivityDetected(audioData, options);
     if (activityDetected)
     {
       this.activityBuffer.Add(audioData);
@@ -82,8 +99,7 @@ public class AudioRecorder : IAudioRecorder, IDisposable
     else if (this.activityBuffer.Count > 5)
     {
       var buffer = this.activityBuffer.ToList();
-      var args = new SpeechAvailableEventArgs(buffer);
-      this.OnSpeechDetected?.Invoke(this, args);
+      this.OnSpeechDetected?.Invoke(this, new SpeechAvailableEventArgs(buffer));
       this.activityBuffer.Clear();
     }
     else
@@ -92,6 +108,10 @@ public class AudioRecorder : IAudioRecorder, IDisposable
     }
   }
 
-  public void Dispose() => recorder?.Release();
+  public void Dispose()
+  {
+    recorder?.Release();
+    echoCanceler?.Release();
+  }
 }
 #endif

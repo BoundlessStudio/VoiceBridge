@@ -1,14 +1,12 @@
 ﻿using System.Diagnostics;
+using VoiceBridge.Models;
 using VoiceBridge.Interfaces;
 
 namespace VoiceBridge.Detectors;
 
 public class VolumeActivityDetector : IActivityDetector
 {
-  // TODO: Convert to Options
-  const float VOLUME_THRESHOLD = 0.002f;
   const int SPEECH_PADDING_MS = 1000;
-
   private DateTime speechEndTime = DateTime.MinValue;
   private bool isRecording = false;
 
@@ -18,12 +16,10 @@ public class VolumeActivityDetector : IActivityDetector
 
   }
 
-  public bool ActivityDetected(BinaryData data)
+  public bool ActivityDetected(BinaryData data, ActivityDetectorOptions options)
   {
     float volume = CalculateVolume(data);
-    Debug.Write($"Volume {volume}:F4");
-
-    if (volume > VOLUME_THRESHOLD)
+    if (volume > options.VolumeThreshold)
     {
       if (isRecording)
       {
@@ -32,13 +28,11 @@ public class VolumeActivityDetector : IActivityDetector
       else
       {
         isRecording = true;
-        Debug.Write($"Volume Threshold Trigger: {VOLUME_THRESHOLD}:F4");
       }
     }
     else if (isRecording && DateTime.Now > speechEndTime)
     {
       isRecording = false;
-      Debug.Write("Activity Ended");
     }
 
     return isRecording;
@@ -54,6 +48,8 @@ public class VolumeActivityDetector : IActivityDetector
       short sample = (short)(buffer[i + 1] << 8 | buffer[i]);
       sum += Math.Abs(sample);
     }
-    return (float)sum / (bytesRecorded / 2) / 32768f;
+    var volume = (float)sum / (bytesRecorded / 2) / 32768f;
+    // Debug.Write($"Volume {volume}");
+    return volume;
   }
 }

@@ -4,9 +4,32 @@
              x:Class="VoiceBridge.App.SettingsPage"
              Title="Settings">
   <VerticalStackLayout Padding="20">
-    <Entry Placeholder="OpenAI Key" Text="{Binding OpenAiKey}" />
+    <Label Text="OpenAI API Key" />
+    <Entry Placeholder="Key" Text="{Binding OpenAiKey}" />
+    <Label Text="Call Signs" />
     <Entry Placeholder="AI Call Sign" Text="{Binding AiCallSign}" />
     <Entry Placeholder="User Call Sign" Text="{Binding UserCallSign}" />
+    <Label Text="Vox Trigger" />
+    <CheckBox IsChecked="{Binding VoxTrigger}" />
+    <Label Text="Volume Threshold" />
+    <Picker SelectedIndex="{Binding VolumeThreshold}">
+      <Picker.Items>
+        <x:String>Wishper</x:String>
+        <x:String>Quiet</x:String>
+        <x:String>Loud</x:String>
+      </Picker.Items>
+    </Picker>
+    <Label Text="Voice" />
+    <Picker SelectedIndex="{Binding Voice}">
+      <Picker.Items>
+        <x:String>Alloy</x:String>
+        <x:String>Echo</x:String>
+        <x:String>Fable</x:String>
+        <x:String>Onyx</x:String>
+        <x:String>Nova</x:String>
+        <x:String>Shimmer</x:String>
+      </Picker.Items>
+    </Picker>
     <Button Text="Back to Main" Clicked="OnBackToMainClicked" HorizontalOptions="Fill" />
   </VerticalStackLayout>
 </ContentPage>

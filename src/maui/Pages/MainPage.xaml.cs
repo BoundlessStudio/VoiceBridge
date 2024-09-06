@@ -26,7 +26,18 @@ public partial class MainPage : ContentPage
 
   private async void OnConnectClicked(object sender, EventArgs e)
   {
-    await Shell.Current.GoToAsync(nameof(BridgePage));
+    PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Microphone>();
+    if (status != PermissionStatus.Granted)
+      status = await Permissions.RequestAsync<Permissions.Microphone>();
+
+    if (status == PermissionStatus.Granted)
+    {
+      await Shell.Current.GoToAsync(nameof(BridgePage));
+    }
+    else
+    {
+      // await DisplayAlert("Permission Denied", "Microphone permission is required to record audio.", "OK");
+    }
   }
 
   private async void OnSettingsClicked(object sender, EventArgs e)
