@@ -1,6 +1,8 @@
-﻿using OpenAI.Audio;
+﻿using CommunityToolkit.Maui.Media;
+using CommunityToolkit.Mvvm.Input;
+using OpenAI.Audio;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
+using System.Globalization;
 using VoiceBridge.App.Services;
 using VoiceBridge.Interfaces;
 using VoiceBridge.Models;
@@ -38,8 +40,8 @@ public class BridgeViewModel : BindableObject
 
   // public string ConnectedText => $"{(IsActive == true ? "Connected to " : "Disconnected from")} the Bridge";
 
-  public ICommand StartCommand { get; }
-  public ICommand StopCommand { get; }
+  public IAsyncRelayCommand StartCommand { get; }
+  public IAsyncRelayCommand StopCommand { get; }
 
   private readonly ISettingsService settings;
   private readonly IPlaybackDevice player;
@@ -60,8 +62,10 @@ public class BridgeViewModel : BindableObject
     this.IsActive = false;
     this.IsInactive = true;
     this.LogEntries = new ObservableCollection<string>();
-    this.StartCommand = new Command(Start);
-    this.StopCommand = new Command(Stop);
+    this.StartCommand = new AsyncRelayCommand(StartAsync);
+    this.StopCommand = new AsyncRelayCommand(StopAsync);
+
+    
 
     this.settings = settings;
     this.sttProvider = sttProvider;
@@ -71,7 +75,7 @@ public class BridgeViewModel : BindableObject
     this.player = player;
   }
  
-  public void Start()
+  public async Task StartAsync()
   {
     if (this.IsActive == true) return;
 
@@ -79,22 +83,76 @@ public class BridgeViewModel : BindableObject
     this.IsInactive = false;
     this.LogEntries.Clear();
     this.aiProvider.ClearMessages();
-    this.recorder.OnSpeechDetected += Recorder_OnSpeechDetected;
-    this.recorder.Start();
-    this.player.Start();
-   
+    //this.recorder.OnSpeechDetected += Recorder_OnSpeechDetected;
+    //this.recorder.Start();
+    //this.player.Start();
+
+    // https://chatgpt.com/c/66db9bac-a320-8001-bd9f-3c450f0052ec
+
+    var isGranted = await SpeechToText.Default.RequestPermissions();
+    if (!isGranted)
+    {
+      return;
+    }
+
+    const string beginSpeakingPrompt = "Begin speaking...";
+
+    var RecognitionText = beginSpeakingPrompt;
+
+    var progression = new Progress<string>(txt =>
+    {
+      if (RecognitionText is beginSpeakingPrompt)
+      {
+        RecognitionText = string.Empty;
+      }
+
+      RecognitionText += txt + " ";
+    });
+    var recognitionResult = await SpeechToText.Default.ListenAsync(CultureInfo.CurrentCulture, progression);
+
+    if (recognitionResult.IsSuccessful)
+    {
+      RecognitionText = recognitionResult.Text;
+    }
   }
 
-  public void Stop()
+  public async Task StopAsync()
   {
     if (this.IsActive == false) return;
 
     this.IsActive = false;
     this.IsInactive = true;
-    this.recorder.OnSpeechDetected -= Recorder_OnSpeechDetected;
-    this.recorder.Stop();
-    this.player.Stop();
+    await SpeechToText.Default.StopListenAsync();
+    //this.recorder.OnSpeechDetected -= Recorder_OnSpeechDetected;
+    //this.recorder.Stop();
+    //this.player.Stop();
   }
+
+  private void OnRecognitionTextUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
+  {
+    var transcript = args.RecognitionResult;
+  }
+
+  private async void OnRecognitionTextCompleted(object? sender, SpeechToTextRecognitionResultCompletedEventArgs args)
+  {
+    var transcript = args.RecognitionResult;
+
+    LogEntries.Insert(0, transcript);
+
+    var aiOptions = new AiProviderOptions()
+    {
+      AiCallSign = this.settings.AiCallSign,
+      UserCallSign = this.settings.UserCallSign
+    };
+    var response = await this.aiProvider.GetAIResponseAsync(transcript, aiOptions);
+    if (response is null)
+      return;
+
+    LogEntries.Insert(0, response);
+
+    await TextToSpeech.Default.SpeakAsync(response);
+  }
+
 
   public async void Recorder_OnSpeechDetected(object? sender, SpeechAvailableEventArgs e)
   {
@@ -123,6 +181,7 @@ public class BridgeViewModel : BindableObject
       Voice = (GeneratedSpeechVoice)settings.Voice,
       AddVoxTrigger = settings.VoxTrigger,
     };
+    //var voice = await this.ttsProvider.StreamSpeechFromTextAsync(response, voiceOptions);
     var voice = await this.ttsProvider.GenerateSpeechFromTextAsync(response, voiceOptions);
     if (voice is null)
       return;

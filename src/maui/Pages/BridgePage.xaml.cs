@@ -22,6 +22,6 @@ public partial class BridgePage : ContentPage
   {
     base.OnDisappearing();
 
-    this.viewModel.Stop();
+    this.viewModel.StopAsync().Wait();
   }
 }

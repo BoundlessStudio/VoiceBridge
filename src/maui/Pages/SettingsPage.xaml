@@ -20,14 +20,14 @@
       </Picker.Items>
     </Picker>
     <Label Text="Voice" />
-    <Picker SelectedIndex="{Binding Voice}">
+    <Picker SelectedItem="{Binding Voice}">
       <Picker.Items>
-        <x:String>Alloy</x:String>
-        <x:String>Echo</x:String>
-        <x:String>Fable</x:String>
-        <x:String>Onyx</x:String>
-        <x:String>Nova</x:String>
-        <x:String>Shimmer</x:String>
+        <x:String>alloy</x:String>
+        <x:String>echo</x:String>
+        <x:String>fable</x:String>
+        <x:String>onyx</x:String>
+        <x:String>nova</x:String>
+        <x:String>shimmer</x:String>
       </Picker.Items>
     </Picker>
     <Button Text="Back to Main" Clicked="OnBackToMainClicked" HorizontalOptions="Fill" />

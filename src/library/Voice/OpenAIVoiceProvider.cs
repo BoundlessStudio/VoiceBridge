@@ -1,5 +1,6 @@
 ﻿using OpenAI;
 using OpenAI.Audio;
+using System.ClientModel;
 using VoiceBridge.Interfaces;
 using VoiceBridge.Models;
 
@@ -15,9 +16,39 @@ public class OpenAIVoiceProvider : ITextToSpeechProvider
     this.options = new SpeechGenerationOptions()
     {
       ResponseFormat = GeneratedSpeechFormat.Pcm,
-      Speed = 1
+      SpeedRatio = 1,
     };
     this.client = client.GetAudioClient("tts-1");
+  }
+
+  public async Task<Stream?> StreamSpeechFromTextAsync(string text, TextToSpeechProviderOptions settings)
+  {
+    // Create the message using the ClientPipeline
+    var message = client.Pipeline.CreateMessage();
+    var request = message.Request;
+
+    // Set the request URL and method
+    request.Method = "POST";
+    request.Uri = new Uri("https://api.openai.com/v1/audio/speech");
+
+    // Add the Authorization and Content-Type headers
+    request.Headers.Add("Content-Type", "application/json");
+
+    // Set the request body with model, input, and voice as per the OpenAI API
+    var body = BinaryData.FromString("{\"model\":\"tts-1\",\"input\":\"" + text + "\",\"voice\":\"alloy\",\"response_format\":\"pcm\"}");
+    request.Content = BinaryContent.Create(body);
+
+    // Send the message through the ClientPipeline
+    await client.Pipeline.SendAsync(message);
+
+    // Ensure the response is successful
+    if (message.Response?.Status != 200)
+    {
+      throw new Exception($"Error: {message.Response?.Status} - {message.Response?.ReasonPhrase}");
+    }
+
+    // Read the response stream as audio
+    return message.Response.ContentStream;
   }
 
   public async Task<BinaryData> GenerateSpeechFromTextAsync(string text, TextToSpeechProviderOptions settings)

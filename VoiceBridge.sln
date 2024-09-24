@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.Core", "src\lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.App", "src\maui\VoiceBridge.App.csproj", "{E781D5FB-B7BA-4EC3-90C8-E56AE93CE9BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceBridge.Worker", "src\worker\VoiceBridge.Worker.csproj", "{19032CA5-D20E-4EF1-8C43-FAC7D783925B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoiceBridge.Worker", "src\worker\VoiceBridge.Worker.csproj", "{19032CA5-D20E-4EF1-8C43-FAC7D783925B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

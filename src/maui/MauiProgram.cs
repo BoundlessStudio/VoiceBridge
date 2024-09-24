@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using OpenAI;
 using System.ClientModel;
 using VoiceBridge.AIProvider;
@@ -6,7 +7,6 @@ using VoiceBridge.App.Services;
 using VoiceBridge.App.Views;
 using VoiceBridge.Detectors;
 using VoiceBridge.Interfaces;
-using VoiceBridge.Models;
 using VoiceBridge.Voice;
 
 namespace VoiceBridge.App;
@@ -19,7 +19,7 @@ public static class MauiProgram
 
     builder
         .UseMauiApp<App>()
-        //.UseMauiCommunityToolkit()
+        .UseMauiCommunityToolkit()
         .ConfigureFonts(fonts =>
         {
           fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -37,22 +37,14 @@ public static class MauiProgram
     builder.Services.AddSingleton<IPlaybackDevice, VoiceBridge.App.Devices.AudioPlayer>();
 #endif
 
-    builder.Services.AddSingleton(sp =>
-    {
+    builder.Services.AddSingleton((sp) => {
       var settings = sp.GetRequiredService<ISettingsService>();
-      var options = new AiProviderOptions()
-      {
-        AiCallSign = settings.AiCallSign,
-        UserCallSign = settings.UserCallSign
-      };
-      return options;
-    });
-    builder.Services.AddSingleton(sp => {
-      var settings = sp.GetRequiredService<ISettingsService>();
-      var client = new OpenAIClient(new ApiKeyCredential(settings.OpenAiKey));
+      var credential = new ApiKeyCredential(settings.OpenAiKey);
+      var options = new OpenAIClientOptions();
+      var client = new OpenAIClient(credential, options);
       return client;
     });
-    
+
     builder.Services.AddSingleton<ISettingsService, SettingsService>();
 
     // Register pages

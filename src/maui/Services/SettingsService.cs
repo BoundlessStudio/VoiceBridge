@@ -7,7 +7,7 @@ public interface ISettingsService
   string UserCallSign { get; set; }
   int VolumeThreshold { get; set; }
   bool VoxTrigger { get; set; }
-  int Voice { get; set; }
+  string Voice { get; set; }
 
   float GetVolumeThreshold();
 }
@@ -65,9 +65,9 @@ public class SettingsService : ISettingsService
     set => Preferences.Set(VoxTriggerKey, value);
   }
 
-  public int Voice
+  public string Voice
   {
-    get => Preferences.Get(VoiceKey, 0);
+    get => Preferences.Get(VoiceKey, "alloy");
     set => Preferences.Set(VoiceKey, value);
   }
 }

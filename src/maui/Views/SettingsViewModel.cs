@@ -86,7 +86,7 @@ public class SettingsViewModel : INotifyPropertyChanged
   }
 
 
-  public int Voice
+  public String Voice
   {
     get => _settingsService.Voice;
     set

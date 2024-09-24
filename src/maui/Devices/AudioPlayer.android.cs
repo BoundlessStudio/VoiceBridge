@@ -1,9 +1,10 @@
-﻿namespace VoiceBridge.App.Devices;
+﻿
 
 #if ANDROID
 using Android.Media;
 using VoiceBridge.Interfaces;
 
+namespace VoiceBridge.App.Devices;
 public class AudioPlayer : IPlaybackDevice, IDisposable
 {
   private const int SampleRate = 24_100;
@@ -66,6 +67,19 @@ public class AudioPlayer : IPlaybackDevice, IDisposable
     var buffer = data.ToArray();
     player.Write(buffer, 0, buffer.Length, WriteMode.Blocking);
     this.IsPlaying = false;
+  }
+
+  public async Task WriteAsync(System.IO.Stream audioStream)
+  {
+    // Buffer to read the audio stream
+    byte[] buffer = new byte[bufferSize];
+    int bytesRead;
+
+    // Read and play the stream in real-time
+    while ((bytesRead = await audioStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+    {
+      await player.WriteAsync(buffer, 0, buffer.Length, WriteMode.Blocking);
+    }
   }
 
   public async Task WriteAsync(BinaryData data)
