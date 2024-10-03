@@ -45,7 +45,7 @@ public class AudioPlayer : IPlaybackDevice, IDisposable
 
   public void Start()
   {
-    player.Play();
+    //player.Play();
   }
 
   public void Stop()
@@ -61,32 +61,40 @@ public class AudioPlayer : IPlaybackDevice, IDisposable
     player.Play();
   }
 
-  public void Write(BinaryData data)
-  {
-    this.IsPlaying = true;
-    var buffer = data.ToArray();
-    player.Write(buffer, 0, buffer.Length, WriteMode.Blocking);
-    this.IsPlaying = false;
-  }
+  //public void Write(BinaryData data)
+  //{
+  //  this.IsPlaying = true;
+  //  player.Play();
+  //  var buffer = data.ToArray();
+  //  player.Write(buffer, 0, buffer.Length, WriteMode.Blocking);
+  //  player.Stop();
+  //  this.IsPlaying = false;
+  //}
 
-  public async Task WriteAsync(System.IO.Stream audioStream)
-  {
-    // Buffer to read the audio stream
-    byte[] buffer = new byte[bufferSize];
-    int bytesRead;
+  //public async Task WriteAsync(System.IO.Stream audioStream)
+  //{
+  //  player.Play();
 
-    // Read and play the stream in real-time
-    while ((bytesRead = await audioStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-    {
-      await player.WriteAsync(buffer, 0, buffer.Length, WriteMode.Blocking);
-    }
-  }
+  //  // Buffer to read the audio stream
+  //  byte[] buffer = new byte[bufferSize];
+  //  int bytesRead;
+
+  //  // Read and play the stream in real-time
+  //  while ((bytesRead = await audioStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+  //  {
+  //    await player.WriteAsync(buffer, 0, buffer.Length, WriteMode.Blocking);
+  //  }
+
+  //  player.Stop();
+  //}
 
   public async Task WriteAsync(BinaryData data)
   {
     this.IsPlaying = true;
+    player.Play();
     var buffer = data.ToArray();
     await player.WriteAsync(buffer, 0, buffer.Length, WriteMode.Blocking);
+    player.Stop();
     this.IsPlaying = false;
   }
 

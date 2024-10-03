@@ -7,24 +7,8 @@ namespace VoiceBridge.AIProvider;
 
 public class OpenAiProvider : IAiProvider
 {
-  private readonly ChatClient client;
-  private readonly List<ChatMessage> messages;
-
-  public OpenAiProvider(OpenAIClient client)
-  {
-    this.client = client.GetChatClient("gpt-4o-2024-08-06");
-    messages = new List<ChatMessage>();
-  }
-
-  public void ClearMessages() => this.messages.Clear();
-
-  public async Task<string> GetAIResponseAsync(string text, AiProviderOptions settings)
-  {
-    messages.Add(new UserChatMessage(text));
-
-    var system = $@"
-<instructions>
-You manage a walkie-talkie system and your Call Sign is {settings.AiCallSign}.
+  public const string DefaultInstructions = $@"
+You manage a walkie-talkie system.
 Your responses go through speech-to-text and text-to-speech processes. 
 Your primary function is to respond to voice queries transmitted over radio. Follow these guidelines:
 
@@ -41,23 +25,41 @@ Your primary function is to respond to voice queries transmitted over radio. Fol
 11. Enunciation-friendly language: Choose words that are easy to pronounce and understand when converted to speech.
 12. Numeric clarity: Spell out numbers (e.g., 'one hundred' instead of '100') to avoid confusion in text-to-speech conversion.
 13. Leter clairty: if required to spell out a word, limit use to the NATO phonetic Radio Communications Spelling Alphabet, for each letter.
-
-Remember, your responses transmitted over radio, so focus on delivering the most important information efficiently.
-</instructions>
-<varaibles>
-User: {settings.UserCallSign}
-Date: {DateTime.Now.ToLongDateString()}
-Time: {DateTime.Now.ToLongTimeString()}
-</varaibles>
 ";
 
-    var collection = new List<ChatMessage>();
-    collection.Add(new SystemChatMessage(system));
+  private readonly ChatClient client;
+  private readonly List<ChatMessage> messages;
+
+  public OpenAiProvider(OpenAIClient client)
+  {
+    this.client = client.GetChatClient("gpt-4o-2024-08-06");
+    messages = new List<ChatMessage>();
+  }
+
+  public void ClearMessages() => this.messages.Clear();
+
+  public async Task<string> GetAIResponseAsync(string text, AiProviderOptions settings)
+  {
+    messages.Add(new UserChatMessage(text));
+
+    var varaibles = @$"
+Location: {settings.Location}
+Date: {DateTime.Now.ToLongDateString()}
+Time: {DateTime.Now.ToLongTimeString()}
+";
+
+    var system = $"<instructions>{settings.Instructions}</instructions><varaibles>{varaibles}</varaibles>";
+
+    var collection = new List<ChatMessage>()
+    {
+      new SystemChatMessage(settings.Instructions),
+      new UserChatMessage(varaibles),
+    };
     collection.AddRange(messages);
 
     var options = new ChatCompletionOptions()
     {
-      MaxTokens = 150
+      MaxOutputTokenCount = 150,
     };
     ChatCompletion completion = await client.CompleteChatAsync(collection, options);
     var response = completion.Content.FirstOrDefault()?.Text ?? string.Empty;

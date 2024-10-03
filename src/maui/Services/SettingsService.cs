@@ -1,22 +1,23 @@
-﻿namespace VoiceBridge.App.Services;
+﻿using VoiceBridge.AIProvider;
+
+namespace VoiceBridge.App.Services;
 
 public interface ISettingsService
 {
   string OpenAiKey { get; set; }
-  string AiCallSign { get; set; }
-  string UserCallSign { get; set; }
+  string Instructions { get; set; }
   int VolumeThreshold { get; set; }
   bool VoxTrigger { get; set; }
   string Voice { get; set; }
 
+  void ResetInstructions();
   float GetVolumeThreshold();
 }
 
 public class SettingsService : ISettingsService
 {
   private const string OpenAiKeyKey = "OpenAiKey";
-  private const string AiCallSignKey = "AiCallSign";
-  private const string UserCallSignKey = "UserCallSign";
+  private const string InstructionsKey = "Instructions";
   private const string VolumeThresholdKey = "VolumeThreshold";
   private const string VoxTriggerKey = "VoxTrigger";
   private const string VoiceKey = "Voice";
@@ -26,17 +27,15 @@ public class SettingsService : ISettingsService
     get => Preferences.Get(OpenAiKeyKey, "");
     set => Preferences.Set(OpenAiKeyKey, value);
   }
-
-  public string AiCallSign
+  public string Instructions
   {
-    get => Preferences.Get(AiCallSignKey, "Assistant");
-    set => Preferences.Set(AiCallSignKey, value);
+    get => Preferences.Get(InstructionsKey, OpenAiProvider.DefaultInstructions);
+    set => Preferences.Set(InstructionsKey, value);
   }
 
-  public string UserCallSign
+  public void ResetInstructions()
   {
-    get => Preferences.Get(UserCallSignKey, "User");
-    set => Preferences.Set(UserCallSignKey, value);
+    Preferences.Set(InstructionsKey, OpenAiProvider.DefaultInstructions);
   }
 
   public float GetVolumeThreshold()

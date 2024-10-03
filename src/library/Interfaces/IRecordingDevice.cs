@@ -9,6 +9,6 @@ public interface IAudioRecorder
 
   bool IsRecording { get; }
 
-  void Start();
-  void Stop();
+  Task StartAsync();
+  Task StopAsync();
 }

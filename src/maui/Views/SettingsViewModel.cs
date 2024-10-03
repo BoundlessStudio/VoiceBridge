@@ -1,17 +1,22 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using VoiceBridge.App.Services;
 
 namespace VoiceBridge.App.Views;
 
 public class SettingsViewModel : INotifyPropertyChanged
 {
-  private readonly ISettingsService _settingsService;
+  private readonly ISettingsService service;
+  
 
   public SettingsViewModel(ISettingsService settingsService)
   {
-    _settingsService = settingsService;
+    service = settingsService;
+    this.ResetInstructionsCommand = new Command(ResetInstructions);
   }
+
+  public ICommand ResetInstructionsCommand { get; set; }
 
   public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -20,40 +25,32 @@ public class SettingsViewModel : INotifyPropertyChanged
     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
   }
 
+  private void ResetInstructions()
+  {
+    this.service.ResetInstructions();
+  }
+
   public string OpenAiKey
   {
-    get => _settingsService.OpenAiKey;
+    get => service.OpenAiKey;
     set
     {
-      if (_settingsService.OpenAiKey != value)
+      if (service.OpenAiKey != value)
       {
-        _settingsService.OpenAiKey = value;
+        service.OpenAiKey = value;
         OnPropertyChanged();
       }
     }
   }
 
-  public string AiCallSign
+  public string Instructions
   {
-    get => _settingsService.AiCallSign;
+    get => service.Instructions;
     set
     {
-      if (_settingsService.AiCallSign != value)
+      if (service.Instructions != value)
       {
-        _settingsService.AiCallSign = value;
-        OnPropertyChanged();
-      }
-    }
-  }
-
-  public string UserCallSign
-  {
-    get => _settingsService.UserCallSign;
-    set
-    {
-      if (_settingsService.UserCallSign != value)
-      {
-        _settingsService.UserCallSign = value;
+        service.Instructions = value;
         OnPropertyChanged();
       }
     }
@@ -61,12 +58,12 @@ public class SettingsViewModel : INotifyPropertyChanged
 
   public int VolumeThreshold
   {
-    get => _settingsService.VolumeThreshold;
+    get => service.VolumeThreshold;
     set
     {
-      if (_settingsService.VolumeThreshold != value)
+      if (service.VolumeThreshold != value)
       {
-        _settingsService.VolumeThreshold = value;
+        service.VolumeThreshold = value;
         OnPropertyChanged();
       }
     }
@@ -74,12 +71,12 @@ public class SettingsViewModel : INotifyPropertyChanged
 
   public bool VoxTrigger
   {
-    get => _settingsService.VoxTrigger;
+    get => service.VoxTrigger;
     set
     {
-      if (_settingsService.VoxTrigger != value)
+      if (service.VoxTrigger != value)
       {
-        _settingsService.VoxTrigger = value;
+        service.VoxTrigger = value;
         OnPropertyChanged();
       }
     }
@@ -88,12 +85,12 @@ public class SettingsViewModel : INotifyPropertyChanged
 
   public String Voice
   {
-    get => _settingsService.Voice;
+    get => service.Voice;
     set
     {
-      if (_settingsService.Voice != value)
+      if (service.Voice != value)
       {
-        _settingsService.Voice = value;
+        service.Voice = value;
         OnPropertyChanged();
       }
     }

@@ -3,15 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="VoiceBridge.App.SettingsPage"
              Title="Settings">
+
   <VerticalStackLayout Padding="20">
-    <Label Text="OpenAI API Key" />
+    <Label Text="OpenAI API Key" FontSize="16"  />
     <Entry Placeholder="Key" Text="{Binding OpenAiKey}" />
-    <Label Text="Call Signs" />
-    <Entry Placeholder="AI Call Sign" Text="{Binding AiCallSign}" />
-    <Entry Placeholder="User Call Sign" Text="{Binding UserCallSign}" />
-    <Label Text="Vox Trigger" />
-    <CheckBox IsChecked="{Binding VoxTrigger}" />
-    <Label Text="Volume Threshold" />
+    <Label Text="Instructions" FontSize="16" Margin="0,5,0,0" />
+    <Editor Placeholder="Key" Text="{Binding Instructions}" HeightRequest="300" />
+    <Button
+      Text="Reset"
+      Command="{Binding ResetInstructionsCommand}" 
+      HorizontalOptions="Fill" />
+    <Label Text="Vox Trigger" FontSize="16" Margin="0,20,0,0" />
+    <CheckBox IsChecked="{Binding VoxTrigger}" HorizontalOptions="Start" />
+    <Label Text="Volume Threshold" FontSize="16" />
     <Picker SelectedIndex="{Binding VolumeThreshold}">
       <Picker.Items>
         <x:String>Wishper</x:String>
@@ -19,7 +23,7 @@
         <x:String>Loud</x:String>
       </Picker.Items>
     </Picker>
-    <Label Text="Voice" />
+    <Label Text="Voice" FontSize="16" />
     <Picker SelectedItem="{Binding Voice}">
       <Picker.Items>
         <x:String>alloy</x:String>

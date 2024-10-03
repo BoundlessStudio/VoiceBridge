@@ -6,7 +6,7 @@ public interface IPlaybackDevice
   void Start();
   void Stop();
   void Flush();
-  void Write(BinaryData audioData);
-  Task WriteAsync(Stream audioStream);
+  //void Write(BinaryData audioData);
+  //Task WriteAsync(Stream audioStream);
   Task WriteAsync(BinaryData data);
 }

@@ -19,6 +19,8 @@ public class VolumeActivityDetector : IActivityDetector
   public bool ActivityDetected(BinaryData data, ActivityDetectorOptions options)
   {
     float volume = CalculateVolume(data);
+    // Debug.Write($"VAD Level: {volume}");
+
     if (volume > options.VolumeThreshold)
     {
       if (isRecording)

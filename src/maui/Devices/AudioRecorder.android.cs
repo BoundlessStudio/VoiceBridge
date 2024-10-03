@@ -52,20 +52,39 @@ public class AudioRecorder : IAudioRecorder, IDisposable
     }
   }
 
-  public void Start()
+  public async Task StartAsync()
   {
-    if (isRecording == true) return;
-    isRecording = true;
-    recorder.StartRecording();
-    Task.Run(RecordAudioData);
+    if (this.isRecording == true)
+    {
+      return;
+    }
+   
+    var status = await Permissions.CheckStatusAsync<Permissions.Microphone>();
+    if (status != PermissionStatus.Granted)
+    {
+      status = await Permissions.RequestAsync<Permissions.Microphone>();
+    }
+
+    if (status == PermissionStatus.Granted)
+    {
+      this.isRecording = true;
+      this.recorder.StartRecording();
+      _ = Task.Run(RecordAudioData);
+    }
   }
 
-  public void Stop()
+  public Task StopAsync()
   {
-    if (isRecording == false) return;
-    isRecording = false;
-    recorder.Stop();
+    if (this.isRecording == false)
+    {
+      return Task.CompletedTask;
+    }
+
+    this.isRecording = false;
+    this.recorder.Stop();
     this.activityBuffer.Clear();
+
+    return Task.CompletedTask;
   }
 
   private void RecordAudioData()

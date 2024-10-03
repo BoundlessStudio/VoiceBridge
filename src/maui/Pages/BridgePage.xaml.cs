@@ -18,10 +18,10 @@ public partial class BridgePage : ContentPage
     await Shell.Current.GoToAsync("..");
   }
 
-  protected override void OnDisappearing()
+  protected override async void OnDisappearing()
   {
     base.OnDisappearing();
 
-    this.viewModel.StopAsync().Wait();
+    await this.viewModel.StopAsync();
   }
 }
